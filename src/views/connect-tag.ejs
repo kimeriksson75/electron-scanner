@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <title>Connect tag</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500italic' rel='stylesheet' type='text/css'>
+    <Link rel="stylesheet" href="./styles.css" />
+	</head>
+  <body>
+    <div class="background">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+   </div>
+    <div class="dialog">
+      <h1>Connect tag</h1>
+      <form id="client-info" v-on:submit.prevent="submitForm()">
+        <label for="users-select">
+          Users
+        </label>
+        <select name="users" id="users-select">
+            <option value="">Please choose your user</option>
+            <% users.map(item=> { %>
+                <option id="<%= item._id%>"> <%= item.username %> </option>
+            <% }) %>
+        </select>
+        <label for="services-select">
+          Services
+        </label>
+        <select name="services" id="services-select">
+            <option value="">Please choose your service</option>
+            <% services.map(item=> { %>
+                <option id="<%= item._id%>"> <%= item.name %> </option>
+            <% }) %>
+        </select>
+        <br>
+        <input type="submit" name="submit" id="submit" value="Submit" />
+      </form>
+          <% if (message) { %>
+            <div id="success-msg" class="message">
+          <% } else { %>
+            <div id="success-msg" class="message" style='display: none;'>
+          <% } %>
+              <%= message %>      
+          </div>
+          <% if (error) { %>
+            <div id="error-msg" class="error">
+          <% } else { %>
+            <div id="error-msg" class="error" style='display: none;'>
+          <% } %>
+          <%= error %> <span id='error-reason'></span>
+      </div>
+    </div>
+    <script>
+        document.querySelector('#submit').addEventListener('click', function(event) {
+            event.preventDefault();
+            const formData = {
+                user: document.querySelector('#users-select').value,
+                service: document.querySelector('#services-select').value,
+            }
+     
+            const {ipcRenderer} = require('electron');
+        
+            // send username to main.js 
+            ipcRenderer.send('post-tag-form-data', formData);
+        
+            // receive message from main.js
+            ipcRenderer.on('post-tag-form-data-response', (event, arg) => {
+                console.log(arg) 
+            });
+        
+         });
+     </script>
+  </body>
+</html>

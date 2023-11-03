@@ -1,0 +1,20 @@
+{
+  "name": "electron-scanner",
+  "version": "1.0.0",
+  "description": "Hello World!",
+  "main": "./src/main.js",
+  "author": "Kim Eriksson",
+  "license": "MIT",
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "electron": "^27.0.2"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "ejs-electron": "^2.1.1",
+    "path": "^0.12.7"
+  }
+}

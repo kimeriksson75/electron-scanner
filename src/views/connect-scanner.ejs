@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang=en>
+  <head>
+    <title>Reset Password</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500italic' rel='stylesheet' type='text/css'>
+    <Link rel="stylesheet" href="./styles.css" />
+	</head>
+  <body>
+    <div class="background">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+   </div>
+    <div class="dialog">
+      <h1>Connect scanner</h1>
+      <form id="client-info" v-on:submit.prevent="submitForm()">
+        <label for="residences-select">
+          Residences
+        </label>
+        <select name="residences" id="residences-select">
+            <option value="">Please choose a residence</option>
+            <% residences.map(item=> { %>
+                <option id="<%= item._id%>"> <%= item.name %> </option>
+            <% }) %>
+        </select>
+        <br>
+        <label for="scanner-type">Scanner Type
+            Type
+          </label>
+          <select name="type" id="scanner-type">
+            <option value="booking">Booking</option>
+          </select>
+
+        <input type="submit" name="submit" id="submit" value="Submit" />
+      </form>
+          <% if (message) { %>
+            <div id="success-msg" class="message">
+          <% } else { %>
+            <div id="success-msg" class="message" style='display: none;'>
+          <% } %>
+              <%= message %>      
+          </div>
+          <% if (error) { %>
+            <div id="error-msg" class="error">
+          <% } else { %>
+            <div id="error-msg" class="error" style='display: none;'>
+          <% } %>
+          <%= error %> <span id='error-reason'></span>
+      </div>
+    </div>
+    <script>
+        document.querySelector('#submit').addEventListener('click', function(event) {
+            event.preventDefault();
+            const formData = {
+                residence: document.querySelector('#residences-select').value,
+                type: document.querySelector('#scanner-type').value
+            }
+     
+            const {ipcRenderer} = require('electron');
+        
+            // send username to main.js 
+            ipcRenderer.send('post-scanner-form-data', formData);
+        
+            // receive message from main.js
+            ipcRenderer.on('post-scanner-form-data-response', (event, arg) => {
+                console.log(arg) 
+            });
+        
+         });
+     </script>
+  </body>
+</html>
