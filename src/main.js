@@ -26,26 +26,18 @@ const createWindow = () => {
     ejse.data({ step: '1', value: '0' })
     window.webContents.loadFile('./src/views/setup.ejs')
     // window.webContents.openDevTools()
-
 }
-const closeApp = async () => {
+const closeApp = async (contents) => {
     console.log('closeApp')
-    ejse.data({ title: "Please scan RFID tag", message: `Let's hope for the best...`, error: null })
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    ejse.data({ title: "Hej", message: `Skanna din RFID-tagg`, error: null })
     window.webContents.loadFile(`./src/views/success.ejs`);
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    
-    onScan({
-        tag: 'test-tag-3',
-        userId: '',
-        scannerId: scannerData.scannerId
-    })
 }
 const launchApp = async (accessToken, serviceId, residenceId) => {
     const appURL = `${APP_BASE_URL}/user/authenticate/${accessToken}/${serviceId}/${residenceId}`
     console.log('appURL', appURL);
-    window.loadURL(appURL);
-    const contents = window.webContents
-    contents.on("did-start-navigation", (event, target) => {
+    window.webContents.loadURL(appURL);
+    window.webContents.on("did-start-navigation", (event, target) => {
         console.log(target);
         if (target.includes(`${APP_BASE_URL}/user/login`)) {
             closeApp();
@@ -54,7 +46,7 @@ const launchApp = async (accessToken, serviceId, residenceId) => {
 }
 const onScan = async (data) => {
     console.log('onScan', data);
-    ejse.data({ title: "RFID detected", message: `making sure all is good..`, error: null })
+    ejse.data({ title: "Toppen,", message: `ett ögonblick...`, error: null })
     window.webContents.loadFile(`./src/views/success.ejs`)
     await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -75,11 +67,11 @@ const onScan = async (data) => {
     authResult = await authenticateTag(data.tag);
     const { user, service, refreshToken, accessToken } = authResult;
     const { _id } = service;
-    ejse.data({ title: "Tag successfully authenticated", message: `Tag successfully authenticated as ${user?.username}`, error: null })
+    ejse.data({ title: `Välkommen ${user?.firstname}`, message: "Du kommer nu slussas vidare till bokningsappen.", error: null })
     window.webContents.loadFile(`./src/views/success.ejs`)
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
     // open app
-    launchApp(accessToken, _id, user.residence)
+    launchApp(refreshToken, _id, user.residence)
 }
 
 const setupScanner = async () => { 
@@ -135,11 +127,9 @@ const setupScanner = async () => {
     window.webContents.loadFile('./src/views/setup.ejs')
     await new Promise(resolve => setTimeout(resolve, 100));
     
-    ejse.data({ title: "Please scan RFID tag", message: `Let's hope for the best...`, error: null })
+    ejse.data({ title: "Hej där!", message: `Skanna din RFID-tagg.`, error: null })
     window.webContents.loadFile(`./src/views/success.ejs`)
-
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    
+    await new Promise(resolve => setTimeout(resolve, 3000));
     onScan({
         tag: 'test-tag-3',
         userId: '',

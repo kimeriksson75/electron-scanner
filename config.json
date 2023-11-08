@@ -1,8 +1,0 @@
-{
-    "scannerId": "test-scanner",
-    "residenceId": "65429601add7c81260092af3",
-    "types": [
-        "booking"
-    ],
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTQyOTY4NGFkZDdjODEyNjAwOTJiMGYiLCJpYXQiOjE2OTg5NTQ4NDcsImV4cCI6MTY5ODk1NTY4N30.t2mGE8vR9Lz3dyulfUl-nNipGaKMzwVsxTCLMt3iipw"
-}
