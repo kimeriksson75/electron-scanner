@@ -138,6 +138,7 @@ const setupScanner = async () => {
 }
 app.whenReady().then(async () => {
     createWindow()
+    window.maximize();
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     setupScanner();
