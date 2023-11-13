@@ -26,6 +26,7 @@ const createWindow = () => {
     });
     ejse.data({ step: '1', value: '0' })
     window.webContents.loadFile('./src/views/setup.ejs')
+    window.setKiosk(true)
     // window.webContents.openDevTools()
 }
 const closeApp = async (contents) => {
@@ -140,8 +141,11 @@ const setupScanner = async () => {
 app.whenReady().then(async () => {
     createWindow()
     window.maximize();
+    window.webContents.on('crashed', (e) => {
+        app.relaunch();
+        app.quit()
+    });
     await new Promise(resolve => setTimeout(resolve, 1000));
-
     setupScanner();
 });
 
