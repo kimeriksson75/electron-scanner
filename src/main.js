@@ -15,6 +15,7 @@ let window;
 
 const createWindow = () => {
     window = new BrowserWindow({
+        titleBarStyle: 'hidden',
         width: 1280,
         height: 960,
         webPreferences: {
