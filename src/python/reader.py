@@ -27,15 +27,11 @@ rfid = SimpleMFRC522()
 def main():
     
     try:
-        while True:
-            id, text = rfid.read()
-            print(id, text)
-            time.sleep(2)
-    except Exception as e:
+        id, text = rfid.read()
+        print(id)
+    finally:
         exit_program()
-
 def exit_program():
-    print("Exiting program...")
     GPIO.cleanup()
     sys.exit(0)
     
