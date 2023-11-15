@@ -25,7 +25,7 @@ const connectScanner = async ({scanner, residences}, window) => {
 
             const result = await postFormData(body);
             
-            console.log('result', result);
+            // console.log('result', result);
 
             // verify response
             if (!result) {

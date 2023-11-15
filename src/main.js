@@ -10,7 +10,7 @@ const { verifyTag } = require('./tag/verify');
 const { connectTag } = require('./tag/connect');
 const { authenticateTag } = require('./tag/authenticate');
 const ejse = require('ejs-electron')
-
+const { awaitScan } = require('./utils/python-shell');
 let window;
 
 const createWindow = () => {
@@ -34,6 +34,8 @@ const closeApp = async (contents) => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     ejse.data({ title: "Hej", message: `Skanna din RFID-tagg`, error: null })
     window.webContents.loadFile(`./src/views/success.ejs`);
+
+    initiateScan();
 }
 const launchApp = async (accessToken, serviceId, residenceId) => {
     const appURL = `${APP_BASE_URL}/user/authenticate/${accessToken}/${serviceId}/${residenceId}`
@@ -75,7 +77,20 @@ const onScan = async (data) => {
     // open app
     launchApp(refreshToken, _id, user.residence)
 }
-
+const initiateScan = async () => {
+    let tag;
+    try {
+        tag = await awaitScan();
+        console.log('tag', tag);
+    } catch (err) {
+        console.error(err);
+    }
+    onScan({
+        tag,
+        userId: '',
+        scannerId: scannerData.scannerId
+    })
+}
 const setupScanner = async () => { 
     console.info('Setting up scanner');
 
@@ -131,13 +146,12 @@ const setupScanner = async () => {
     
     ejse.data({ title: "Hej där!", message: `Skanna din RFID-tagg.`, error: null })
     window.webContents.loadFile(`./src/views/success.ejs`)
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    onScan({
-        tag: 'test-tag-3',
-        userId: '',
-        scannerId: scannerData.scannerId
-    })
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    initiateScan();
 }
+
+
 app.whenReady().then(async () => {
     createWindow()
     window.maximize();
