@@ -3,7 +3,8 @@ body {
     color: #1D3557;
     background: black;
     background-size: cover;
-    height:100%; height:100vh;
+    height:100vh;
+    overflow: hidden;
     display: -webkit-flex; /* Safari */
     -webkit-align-items: center; /* Safari 7.0+ */
     display: flex;
