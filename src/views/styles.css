@@ -29,9 +29,9 @@ body {
 }
 
 .dialog h1 {
-    font-size:28px;
-    text-align:left;
-    margin-bottom:8px;
+    font-size: 28px;
+    text-align: left;
+    margin-bottom: 24px;
     text-align: center;
 }
 
@@ -53,15 +53,15 @@ body {
 }
 
 .dialog form input:last-child {
-    display:block;
-    margin:20px auto 15px;
-    border:1px solid #ccc;
+    display: block;
+    margin: 12px auto;
+    border: 1px solid gray;
     width: 100%;
     border-radius:3px;
-    padding:6px 15px;
-    font-family:Roboto;
-    background-color: #003049;
-    color:#fff;
+    padding: 12px 15px;
+    font-family: Roboto;
+    background-color: #ccc5b9;
+    color: #252422;
     font-size:16px;
 }
 .error,
@@ -71,12 +71,50 @@ body {
     text-align: center;
 }
 .error {
-    color: #D62828;
+    background-color: #eb5e28;
+    color: white;
+    text-align: left;
+    padding: 4px 8px;
+    border-radius: 3px;
+
 }
 
+input {
+  background-color: #5C7457;
+}
 input:focus {
-    color: #D62828;
-    outline: 1px solid #fcbf49;  
+    /* color: #D62828; */
+    outline: 1px solid #5C7457;  
+}
+
+
+select {
+  font-family: Roboto;
+  font-size:16px;
+  width: 300px;
+  padding: 12px;
+  border: 0 !important;
+  background-color: #62929E;
+  color: white;
+  color: #252422;
+  border-radius:3px;
+  /* needed */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* SVG background image */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Ctitle%3Edown-arrow%3C%2Ftitle%3E%3Cg%20fill%3D%22%23000000%22%3E%3Cpath%20d%3D%22M10.293%2C3.293%2C6%2C7.586%2C1.707%2C3.293A1%2C1%2C0%2C0%2C0%2C.293%2C4.707l5%2C5a1%2C1%2C0%2C0%2C0%2C1.414%2C0l5-5a1%2C1%2C0%2C1%2C0-1.414-1.414Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  background-size: .6em;
+  background-position: calc(100% - 1.3em) center;
+  background-repeat: no-repeat;
+  margin: 12px auto;
+}
+
+select:focus {
+  outline: 1px solid #5C7457;
+}
+select::-ms-expand {
+    display: none;
 }
 
 .ldBar {

@@ -12,18 +12,12 @@
     <div class="dialog">
       <h1>Connect tag</h1>
       <form id="client-info" v-on:submit.prevent="submitForm()">
-        <label for="users-select">
-          Users
-        </label>
         <select name="users" id="users-select">
             <option value="">Please choose your user</option>
             <% users.map(item=> { %>
                 <option id="<%= item._id%>"> <%= item.username %> </option>
             <% }) %>
         </select>
-        <label for="services-select">
-          Services
-        </label>
         <select name="services" id="services-select">
             <option value="">Please choose your service</option>
             <% services.map(item=> { %>
@@ -63,7 +57,9 @@
         
             // receive message from main.js
             ipcRenderer.on('post-tag-form-data-response', (event, arg) => {
-                console.log(arg) 
+                console.log(arg)
+                document.querySelector('#error-msg').style.display = 'block';
+                document.querySelector('#error-reason').innerHTML = arg.error;
             });
         
          });

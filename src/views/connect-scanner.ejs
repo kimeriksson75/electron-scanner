@@ -12,9 +12,6 @@
     <div class="dialog">
       <h1>Connect scanner</h1>
       <form id="client-info" v-on:submit.prevent="submitForm()">
-        <label for="residences-select">
-          Residences
-        </label>
         <select name="residences" id="residences-select">
             <option value="">Please choose a residence</option>
             <% residences.map(item=> { %>
@@ -22,12 +19,9 @@
             <% }) %>
         </select>
         <br>
-        <label for="scanner-type">Scanner Type
-            Type
-          </label>
-          <select name="type" id="scanner-type">
-            <option value="booking">Booking</option>
-          </select>
+        <select name="type" id="scanner-type">
+          <option value="booking">Booking</option>
+        </select>
 
         <input type="submit" name="submit" id="submit" value="Submit" />
       </form>
@@ -61,7 +55,8 @@
         
             // receive message from main.js
             ipcRenderer.on('post-scanner-form-data-response', (event, arg) => {
-                console.log(arg) 
+              document.querySelector('#error-msg').style.display = 'block';
+              document.querySelector('#error-reason').innerHTML = arg.error;
             });
         
          });
