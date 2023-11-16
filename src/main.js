@@ -18,40 +18,51 @@ const createWindow = () => {
         titleBarStyle: 'hidden',
         width: 1280,
         height: 960,
+        backgroundColor: '#252422',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
             enableRemoteModule: true,
         }
     });
-    ejse.data({ step: '1', value: '0' })
-    window.webContents.loadFile('./src/views/setup.ejs')
+    // ejse.data({ step: '1', value: '0' })
+    // window.webContents.loadFile('./src/views/setup.ejs')
     window.setKiosk(true)
     // window.webContents.openDevTools()
 }
+
 const closeApp = async (contents) => {
     console.log('closeApp')
     await new Promise(resolve => setTimeout(resolve, 2000));
     ejse.data({ title: "Hej", message: `Skanna din RFID-tagg`, error: null })
-    window.webContents.loadFile(`./src/views/success.ejs`);
+    window.webContents.loadFile('./src/views/success.ejs');
 
     initiateScan();
 }
+
+const didFinishLoad = () => {
+    window.webContents.insertCSS('html, body { background-color: #f00; cursor: none; }')
+    window.webContents.removeListener('did-finish-load', didFinishLoad)
+}
+const didStartNavigation = (event, target) => {
+    if (target.includes(`${APP_BASE_URL}/user/login`)) {
+        window.webContents.removeListener('did-start-navigation', didStartNavigation)
+        closeApp();
+    }
+}
+
 const launchApp = async (accessToken, serviceId, residenceId) => {
     const appURL = `${APP_BASE_URL}/user/authenticate/${accessToken}/${serviceId}/${residenceId}`
     console.log('appURL', appURL);
     window.webContents.loadURL(appURL);
-    window.webContents.on("did-start-navigation", (event, target) => {
-        console.log(target);
-        if (target.includes(`${APP_BASE_URL}/user/login`)) {
-            closeApp();
-        }
-    });
+
+    window.webContents.on('did-finish-load', didFinishLoad);
+    window.webContents.on("did-start-navigation", didStartNavigation);
 }
 const onScan = async (data) => {
     console.log('onScan', data);
     ejse.data({ title: "Toppen,", message: `ett ögonblick...`, error: null })
-    window.webContents.loadFile(`./src/views/success.ejs`)
+    window.webContents.loadFile('./src/views/success.ejs');
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const result = await verifyTag(data);
@@ -72,7 +83,7 @@ const onScan = async (data) => {
     const { user, service, refreshToken, accessToken } = authResult;
     const { _id } = service;
     ejse.data({ title: `Välkommen ${user?.firstname}`, message: "Du kommer nu slussas vidare till bokningsappen.", error: null })
-    window.webContents.loadFile(`./src/views/success.ejs`)
+    window.webContents.loadFile('./src/views/success.ejs');
     await new Promise(resolve => setTimeout(resolve, 3000));
     // open app
     launchApp(refreshToken, _id, user.residence)
@@ -100,18 +111,18 @@ const setupScanner = async () => {
     
     // verify scanner
     //TODO: display setup progress in view
-    ejse.data({ step: '1', value: '0' })
-    window.webContents.loadFile('./src/views/setup.ejs')
-    await new Promise(resolve => setTimeout(resolve, 100));
+    ejse.data({ title: '🚀', message: '', error: null })
+    window.webContents.loadFile('./src/views/success.ejs');
+    await new Promise(resolve => setTimeout(resolve, 500));
     const result = await verifyScanner(data);
     
     const { scanner = null } = result;
 	let authResult;
     if (!scanner) {
         // if not verified, connect scanner
-        ejse.data({ step: '2', value: '25' })
-        window.webContents.loadFile('./src/views/setup.ejs')
-        await new Promise(resolve => setTimeout(resolve, 100));
+        window.webContents.send('progress', '25');
+        // window.webContents.loadFile('./src/views/setup.ejs');
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         const connectedScanner = await connectScanner({
             ...result,
@@ -121,16 +132,20 @@ const setupScanner = async () => {
         );
     }
     // authenticate scanner
-    ejse.data({ step: '3', value: '50' })
-    window.webContents.loadFile('./src/views/setup.ejs')
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // ejse.data({ step: '3', value: '50' })
+    // window.webContents.send('progress', '50');
+
+    // window.webContents.loadFile('./src/views/setup.ejs');
+    await new Promise(resolve => setTimeout(resolve, 500));
     authResult = await authenticateScanner(data.scanner);
     
     // save authenticated scanner data to config.json
-    ejse.data({ step: '4', value: '75' })
-    window.webContents.loadFile('./src/views/setup.ejs')
+    // ejse.data({ step: '4', value: '75' })
+    // window.webContents.send('progress', '75');
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // window.webContents.loadFile('./src/views/setup.ejs');
+
+    await new Promise(resolve => setTimeout(resolve, 500));
 	const resultData = await updateConfigJSON(authResult);
     scannerData = resultData;
     
@@ -139,13 +154,15 @@ const setupScanner = async () => {
 
     console.log(process.env.API_AUTH_TOKEN)
 
-    //success view
-    ejse.data({ step: '5', value: '100' })
-    window.webContents.loadFile('./src/views/setup.ejs')
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // ejse.data({ step: '5', value: '100' })
+    // window.webContents.send('progress', '100');
+
+    // window.webContents.loadFile('./src/views/setup.ejs');
+    await new Promise(resolve => setTimeout(resolve, 500));
     
+    //success view
     ejse.data({ title: "Hej där!", message: `Skanna din RFID-tagg.`, error: null })
-    window.webContents.loadFile(`./src/views/success.ejs`)
+    window.webContents.loadFile('./src/views/success.ejs');
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     initiateScan();
