@@ -26,6 +26,7 @@
         </select>
         <br>
         <input type="submit" name="submit" id="submit" value="Submit" />
+        <input type="button" name="cancel" id="cancel" value="Cancel" />
       </form>
           <% if (message) { %>
             <div id="success-msg" class="message">
@@ -63,6 +64,13 @@
             });
         
          });
+        document.querySelector('#cancel').addEventListener('click', function(event) {
+          console.log('cancel')
+
+          const { ipcRenderer } = require('electron');
+          ipcRenderer.send('cancel-tag-form', null);
+
+        });
      </script>
   </body>
 </html>

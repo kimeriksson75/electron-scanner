@@ -38,6 +38,10 @@ const connectTag = async ({ tag, scannerId, users, services }, window) => {
             resolve(result);
             
         });
+        ipcMain.on('cancel-tag-form', async (event) => {
+            // event.sender.send('cancel-tag-form-response', { message: "Tag form cancelled" });
+            reject({ message: "Tag form cancelled" });
+        });
      });
 };
 

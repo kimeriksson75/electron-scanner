@@ -22,8 +22,8 @@
         <select name="type" id="scanner-type">
           <option value="booking">Booking</option>
         </select>
-
         <input type="submit" name="submit" id="submit" value="Submit" />
+        <input type="button" name="cancel" id="cancel" value="Cancel" />
       </form>
           <% if (message) { %>
             <div id="success-msg" class="message">
@@ -58,8 +58,11 @@
               document.querySelector('#error-msg').style.display = 'block';
               document.querySelector('#error-reason').innerHTML = arg.error;
             });
-        
          });
+         document.querySelector('#cancel').addEventListener('click', function(event) {
+          const { ipcRenderer } = require('electron');
+          ipcRenderer.send('cancel-scanner-form', null);
+        });
      </script>
   </body>
 </html>

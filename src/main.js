@@ -69,12 +69,18 @@ const onScan = async (data) => {
     const { tag = null, user: existingUser = null } = result;
     if(!tag || !existingUser) {
         // if not verified, connect tag
-        const connectedTag = await connectTag({
-            ...result,
-            tag: data.tag,
-            scannerId: data.scannerId
-        },
-        window);
+        try {
+
+            const connectedTag = await connectTag({
+                ...result,
+                tag: data.tag,
+                scannerId: data.scannerId
+            },
+            window);
+        } catch (err) {
+            console.error(err);
+            initiateScan();
+        }
        
     };
 
@@ -89,6 +95,10 @@ const onScan = async (data) => {
     launchApp(refreshToken, _id, user.residence)
 }
 const initiateScan = async () => {
+    //scan view
+    ejse.data({ title: "Hej där!", message: `Skanna din RFID-tagg.`, error: null })
+    window.webContents.loadFile('./src/views/success.ejs');
+    
     let tag;
     try {
         tag = await awaitScan();
@@ -123,13 +133,18 @@ const setupScanner = async () => {
         window.webContents.send('progress', '25');
         // window.webContents.loadFile('./src/views/setup.ejs');
         await new Promise(resolve => setTimeout(resolve, 500));
+        try {
 
-        const connectedScanner = await connectScanner({
-            ...result,
-            scanner: data.scanner,
-        },
+            await connectScanner({
+                ...result,
+                scanner: data.scanner,
+            },
             window
-        );
+            );
+        } catch (err) {
+            console.error(err);
+            setupScanner();
+        }
     }
     // authenticate scanner
     // ejse.data({ step: '3', value: '50' })
@@ -159,11 +174,6 @@ const setupScanner = async () => {
 
     // window.webContents.loadFile('./src/views/setup.ejs');
     await new Promise(resolve => setTimeout(resolve, 500));
-    
-    //success view
-    ejse.data({ title: "Hej där!", message: `Skanna din RFID-tagg.`, error: null })
-    window.webContents.loadFile('./src/views/success.ejs');
-    await new Promise(resolve => setTimeout(resolve, 1000));
 
     initiateScan();
 }

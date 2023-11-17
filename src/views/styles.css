@@ -52,9 +52,9 @@ body {
     color:#333;
 }
 
-.dialog form input:last-child {
+.dialog form input {
     display: block;
-    margin: 12px auto;
+    margin: 12px auto 24px;
     border: 1px solid gray;
     width: 100%;
     border-radius:3px;
@@ -64,6 +64,10 @@ body {
     color: #252422;
     font-size:16px;
 }
+.dialog form input:last-child {
+    background-color: #eb5e28;
+}  
+
 .error,
 .message {
     padding: 0 8px;

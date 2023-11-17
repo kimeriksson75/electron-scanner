@@ -32,7 +32,10 @@ const connectScanner = async ({scanner, residences}, window) => {
                 event.sender.send('post-scanner-form-data-response', { error: "Scanner not found"});
             }
             resolve(result);
-            
+        });
+        ipcMain.on('cancel-scanner-form', async (event) => {
+            // event.sender.send('cancel-tag-form-response', { message: "Tag form cancelled" });
+            reject({ message: "Tag form cancelled" });
         });
      });
 };
