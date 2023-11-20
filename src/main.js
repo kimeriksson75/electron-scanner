@@ -45,7 +45,7 @@ const didFinishLoad = () => {
     window.webContents.removeListener('did-finish-load', didFinishLoad)
 }
 const didStartNavigation = (event, target) => {
-    if (target.includes(`${APP_BASE_URL}/user/login`)) {
+    if (target.includes(`${APP_BASE_URL}/user/logout`)) {
         window.webContents.removeListener('did-start-navigation', didStartNavigation)
         closeApp();
     }
