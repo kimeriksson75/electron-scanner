@@ -15,6 +15,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "ejs-electron": "^2.1.1",
+    "moment": "^2.29.4",
     "path": "^0.12.7",
     "python-shell": "^5.0.0"
   }

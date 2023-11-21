@@ -11,6 +11,11 @@ body {
     align-items: center;
 }
 
+.extended-dialog {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
 .dialog {
     display:block;
     margin-left:auto;
@@ -121,6 +126,40 @@ select::-ms-expand {
     display: none;
 }
 
+.calendar-day-bookings {
+  flex: none;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  gap: 6px;
+}
+
+li {
+  display: flex;
+  flex-direction: row;
+  padding: 8px 12px;
+  transition: background-color .2s ease-out;
+  cursor: pointer;
+}
+
+.calendar-day-bookings--occupied {
+  display: flex;
+  flex-direction: row;
+  color: rgba(#5C7457, .8);
+  border-left: rgba(#5C7457, .8);
+  background-color: #5C7457;
+}
+
+.calendar-day-bookings__content__timeslot {
+  margin-right: 24px;
+}
 .ldBar {
     position: relative;
     margin: 0 auto;

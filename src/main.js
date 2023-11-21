@@ -1,7 +1,7 @@
 const { app, BrowserWindow, shell, ipcMain, ipcRenderer } = require('electron')
 const path = require('path')
 const { APP_BASE_URL } = require('./config');
-const { updateConfigJSON } = require('./utils/update-config');
+const { updateConfigJSON, getConfigJSON } = require('./utils/config');
 const contextBridge = require('electron').contextBridge;
 const { connectScanner,  } = require('./scanner/connect');
 const { verifyScanner } = require('./scanner/verify');
@@ -11,6 +11,8 @@ const { connectTag } = require('./tag/connect');
 const { authenticateTag } = require('./tag/authenticate');
 const ejse = require('ejs-electron')
 const { awaitScan } = require('./utils/python-shell');
+const { dayBookings } = require('./utils/day-bookings');
+
 let window;
 
 const createWindow = () => {
@@ -96,13 +98,19 @@ const onScan = async (data) => {
 }
 const initiateScan = async () => {
     //scan view
-    ejse.data({ title: "Hej där!", message: `Skanna din RFID-tagg.`, error: null })
-    window.webContents.loadFile('./src/views/success.ejs');
+    const { serviceId, token } = await getConfigJSON();
+    const dayBookingsRequestData = {
+        serviceId,
+        token
+    }
+    const { timeslots, date} = await dayBookings(dayBookingsRequestData)
+
+    ejse.data({ title: "Hej där!", message: `Skanna din RFID-tagg.`, timeslots, date, error: null })
+    window.webContents.loadFile('./src/views/await-scan.ejs');
     
     let tag;
     try {
         tag = await awaitScan();
-        console.log('tag', tag);
     } catch (err) {
         console.error(err);
     }
@@ -127,7 +135,8 @@ const setupScanner = async () => {
     const result = await verifyScanner(data);
     
     const { scanner = null } = result;
-	let authResult;
+    let authResult = null;
+    let connectResult;
     if (!scanner) {
         // if not verified, connect scanner
         window.webContents.send('progress', '25');
@@ -135,7 +144,7 @@ const setupScanner = async () => {
         await new Promise(resolve => setTimeout(resolve, 500));
         try {
 
-            await connectScanner({
+            connectResult = await connectScanner({
                 ...result,
                 scanner: data.scanner,
             },
@@ -146,13 +155,14 @@ const setupScanner = async () => {
             setupScanner();
         }
     }
+    console.log('connectResult', connectResult)
     // authenticate scanner
     // ejse.data({ step: '3', value: '50' })
     // window.webContents.send('progress', '50');
-
     // window.webContents.loadFile('./src/views/setup.ejs');
     await new Promise(resolve => setTimeout(resolve, 500));
     authResult = await authenticateScanner(data.scanner);
+    console.log('authResult', authResult)
     
     // save authenticated scanner data to config.json
     // ejse.data({ step: '4', value: '75' })

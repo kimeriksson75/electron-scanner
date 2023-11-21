@@ -5,7 +5,8 @@ const updateConfigJSON = async ({ scanner, token }) => {
 	// populate scanner data
 	scannerData = {
 		scannerId: scanner.scannerId,
-		residenceId: scanner.residenceId,
+        residenceId: scanner.residenceId,
+        serviceId: scanner.serviceId,
 		types: scanner.types,
 		token
 	};
@@ -23,15 +24,16 @@ const updateConfigJSON = async ({ scanner, token }) => {
 }
 
 const getConfigJSON = async () => new Promise((resolve, reject) => {
-        fs.readFile('./config.json', content, 'utf8', function (err) {
-            if (err) {
-                console.error("An error occured while writing JSON Object to File.");
-                reject()
-            }
-            console.info("JSON file has been saved.");
-            resolve(scannerData);
-        });
+    fs.readFile('./config.json', 'utf8', function (err, data) {
+        if (err) {
+            console.error("An error occured while writing JSON Object to File.");
+            reject()
+        }
+        const scannerData = JSON.parse(data);
+        console.info("JSON data", scannerData);
+        resolve(scannerData);
     });
+})
 
 module.exports = {
     updateConfigJSON,

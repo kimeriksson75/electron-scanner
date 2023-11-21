@@ -19,6 +19,10 @@
             <% }) %>
         </select>
         <br>
+        <select name="services" id="services-select">
+            <option value="">Please choose a service</option>
+        </select>
+        <br>
         <select name="type" id="scanner-type">
           <option value="booking">Booking</option>
         </select>
@@ -41,28 +45,41 @@
       </div>
     </div>
     <script>
-        document.querySelector('#submit').addEventListener('click', function(event) {
+          document.querySelector('#submit').addEventListener('click', function(event) {
             event.preventDefault();
             const formData = {
                 residence: document.querySelector('#residences-select').value,
+                service: document.querySelector('#services-select').value,
                 type: document.querySelector('#scanner-type').value
             }
-     
+    
             const {ipcRenderer} = require('electron');
-        
-            // send username to main.js 
+      
+          // send username to main.js 
             ipcRenderer.send('post-scanner-form-data', formData);
-        
+      
             // receive message from main.js
             ipcRenderer.on('post-scanner-form-data-response', (event, arg) => {
               document.querySelector('#error-msg').style.display = 'block';
               document.querySelector('#error-reason').innerHTML = arg.error;
             });
-         });
-         document.querySelector('#cancel').addEventListener('click', function(event) {
-          const { ipcRenderer } = require('electron');
-          ipcRenderer.send('cancel-scanner-form', null);
-        });
+          });
+          document.querySelector('#residences-select').addEventListener('change', function(event) {
+            const {ipcRenderer} = require('electron');
+            const residenceSelect = document.querySelector('#residences-select')
+
+            ipcRenderer.send('get-available-services', residenceSelect.options[residenceSelect.selectedIndex].id);
+            ipcRenderer.on('get-available-services-response', (event, services) => {
+              document.querySelector('#services-select').innerHTML = '<option value="">Please choose a service</option>';
+              services.map(item => {
+                document.querySelector('#services-select').innerHTML += `<option id="${item._id}">${item.name}</option>`;
+              });
+            });
+          });
+          document.querySelector('#cancel').addEventListener('click', function(event) {
+            const { ipcRenderer } = require('electron');
+            ipcRenderer.send('cancel-scanner-form', null);
+          });
      </script>
   </body>
 </html>

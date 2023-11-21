@@ -1,5 +1,5 @@
 const { ipcMain } = require('electron')
-const { API_BASE_URL, API_VERSION, API_SCANNERS_ENDPOINT, API_AUTH_TOKEN } = require('../config');
+const { API_BASE_URL, API_VERSION, API_SCANNERS_ENDPOINT, API_SERVICES_ENDPOINT, API_AUTH_TOKEN } = require('../config');
 
 const ejse = require('ejs-electron')
 const connectScanner = async ({scanner, residences}, window) => {
@@ -7,12 +7,11 @@ const connectScanner = async ({scanner, residences}, window) => {
     window.webContents.loadFile(`./src/views/connect-scanner.ejs`)
     
     await new Promise(  (resolve, reject) => {
-        ipcMain.on('post-scanner-form-data', async (event, { residence, type }) => {
-            console.log('post-scanner-form-data', residence, type);
+        ipcMain.on('post-scanner-form-data', async (event, { residence, service, type }) => {
 
             // verify form data
-            if (!residence || !type) {
-                event.sender.send('post-scanner-form-data-response', { error: "Please select a residence and type" });
+            if (!residence || !service || !type) {
+                event.sender.send('post-scanner-form-data-response', { error: "Please select a residence service, and type" });
                 return;
             }
 
@@ -20,6 +19,7 @@ const connectScanner = async ({scanner, residences}, window) => {
             const body = {
                 scanner,
                 residence,
+                service,
                 type,
             };
 
@@ -37,11 +37,32 @@ const connectScanner = async ({scanner, residences}, window) => {
             // event.sender.send('cancel-tag-form-response', { message: "Tag form cancelled" });
             reject({ message: "Tag form cancelled" });
         });
+
+        ipcMain.on('get-available-services', async (event, residence) => {
+            const result = await getAvailableServices(residence);
+            event.sender.send('get-available-services-response', result);
+        });
      });
 };
+const getAvailableServices = async residence => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/${API_VERSION}/${API_SERVICES_ENDPOINT}/residence/${residence}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_AUTH_TOKEN}`,
+            },
+        });
+        const json = await response.json();
+        return json;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
 
 const postFormData = async (body) => {
-    const { scanner, residence, type } = body;
+    const { scanner } = body;
     try {
 
         const response = await fetch(`${API_BASE_URL}/${API_VERSION}/${API_SCANNERS_ENDPOINT}/${scanner}`, {
