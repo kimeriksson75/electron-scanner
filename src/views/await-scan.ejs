@@ -4,24 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <title>Connect tag success</title>
-    <Link rel="stylesheet" href="./styles.css" />
+    <Link rel="stylesheet" href="./styles/styles.css" />
+    <Link rel="stylesheet" href="./styles/await-scan.css" />
+    <Link rel="stylesheet" href="./styles/animated-icon.css" />
   </head>
   <body>
-    <div class="extended-dialog">
+    <div class="welcome-wrapper">
 
-      <div class="dialog">
-        <% if (message || title) { %>
-          <h1><%= title %></h1>
-          <div id="success-msg" class="message">
-        <% } else { %>
-          <div id="success-msg" class="message" style='display: none;'>
-          <% } %>
-          <p><%= message %></p> 
-        </div>
+      <div class="welcome-message">
+        <h1>Hej där!</h1>
+        <p>Scanna din RFID-tagg</p>
+        <div class="lds-ripple"><div></div><div></div></div>
       </div>
         
-        <div class="dialog">
-          <h2>Bokningar <%= date %></h2>
+        <div class="welcome-bookings">
+          <h3>Bokningar <%= date %></h3>
           <ul>
             <% timeslots.map(item=> { %>
               <li class="calendar-day-bookings-animate calendar-day-bookings--occupied" key="<%= item._id%>">

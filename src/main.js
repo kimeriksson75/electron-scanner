@@ -65,7 +65,7 @@ const onScan = async (data) => {
     console.log('onScan', data);
     ejse.data({ title: "Toppen,", message: `ett ögonblick...`, error: null })
     window.webContents.loadFile('./src/views/success.ejs');
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const result = await verifyTag(data);
     const { tag = null, user: existingUser = null } = result;
@@ -90,9 +90,9 @@ const onScan = async (data) => {
     authResult = await authenticateTag(data.tag);
     const { user, service, refreshToken, accessToken } = authResult;
     const { _id } = service;
-    ejse.data({ title: `Välkommen ${user?.firstname}`, message: "Du kommer nu slussas vidare till bokningsappen.", error: null })
+    ejse.data({ title: `Välkommen ${user?.firstname}`, message: "", error: null })
     window.webContents.loadFile('./src/views/success.ejs');
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
     // open app
     launchApp(refreshToken, _id, user.residence)
 }
